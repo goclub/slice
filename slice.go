@@ -37,9 +37,6 @@ func Contains[T comparable](slice []T, value T) (found bool) {
 // Intersection([]int{1,0,8, 2}, []int{3,0,8, 4}) // []int{0,8}
 func Intersection[T comparable](slices ...[]T) (result []T) {
 	slicesLen := uint64(len(slices))
-	if slicesLen == 0 {
-		return nil
-	}
 	if slicesLen == 1 {
 		return slices[0]
 	}

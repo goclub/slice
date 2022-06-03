@@ -9,6 +9,11 @@ import (
 func TestIndexOfFromIndex(t *testing.T) {
 	source := []string{"a", "b", "c"}
 	{
+		found, index := xslice.IndexOf(source, "a")
+		assert.Equal(t, found, true)
+		assert.Equal(t, index, uint64(0))
+	}
+	{
 		found, index := xslice.IndexOfFormIndex(source, "a", 0)
 		assert.Equal(t, found, true)
 		assert.Equal(t, index, uint64(0))
@@ -60,6 +65,12 @@ func TestIndexOfFromIndex(t *testing.T) {
 	}
 }
 func TestIntersection(t *testing.T) {
+	{
+		result := xslice.Intersection(
+			[]int{1},
+		)
+		assert.Equal(t, result, []int{1})
+	}
 	{
 		result := xslice.Intersection(
 			[]int{1, 111, 222, 333, 2, 3},
