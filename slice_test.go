@@ -9,57 +9,57 @@ import (
 func TestIndexOfFromIndex(t *testing.T) {
 	source := []string{"a", "b", "c"}
 	{
-		found, index := xslice.IndexOf(source, "a")
+		index, found := xslice.IndexOf(source, "a")
 		assert.Equal(t, found, true)
 		assert.Equal(t, index, uint64(0))
 	}
 	{
-		found, index := xslice.IndexOfFormIndex(source, "a", 0)
+		index, found := xslice.IndexOfFormIndex(source, "a", 0)
 		assert.Equal(t, found, true)
 		assert.Equal(t, index, uint64(0))
 	}
 	{
-		found, index := xslice.IndexOfFormIndex(source, "a", 1)
+		index, found := xslice.IndexOfFormIndex(source, "a", 1)
 		assert.Equal(t, found, false)
 		assert.Equal(t, index, uint64(0))
 	}
 	{
-		found, index := xslice.IndexOfFormIndex(source, "a", 2)
+		index, found := xslice.IndexOfFormIndex(source, "a", 2)
 		assert.Equal(t, found, false)
 		assert.Equal(t, index, uint64(0))
 	}
 	{
-		found, index := xslice.IndexOfFormIndex(source, "b", 0)
+		index, found := xslice.IndexOfFormIndex(source, "b", 0)
 		assert.Equal(t, found, true)
 		assert.Equal(t, index, uint64(1))
 	}
 	{
-		found, index := xslice.IndexOfFormIndex(source, "b", 1)
+		index, found := xslice.IndexOfFormIndex(source, "b", 1)
 		assert.Equal(t, found, true)
 		assert.Equal(t, index, uint64(1))
 	}
 	{
-		found, index := xslice.IndexOfFormIndex(source, "b", 2)
+		index, found := xslice.IndexOfFormIndex(source, "b", 2)
 		assert.Equal(t, found, false)
 		assert.Equal(t, index, uint64(0))
 	}
 	{
-		found, index := xslice.IndexOfFormIndex(source, "c", 0)
+		index, found := xslice.IndexOfFormIndex(source, "c", 0)
 		assert.Equal(t, found, true)
 		assert.Equal(t, index, uint64(2))
 	}
 	{
-		found, index := xslice.IndexOfFormIndex(source, "c", 1)
+		index, found := xslice.IndexOfFormIndex(source, "c", 1)
 		assert.Equal(t, found, true)
 		assert.Equal(t, index, uint64(2))
 	}
 	{
-		found, index := xslice.IndexOfFormIndex(source, "c", 2)
+		index, found := xslice.IndexOfFormIndex(source, "c", 2)
 		assert.Equal(t, found, true)
 		assert.Equal(t, index, uint64(2))
 	}
 	{
-		found, index := xslice.IndexOfFormIndex(source, "c", 3)
+		index, found := xslice.IndexOfFormIndex(source, "c", 3)
 		assert.Equal(t, found, false)
 		assert.Equal(t, index, uint64(0))
 	}

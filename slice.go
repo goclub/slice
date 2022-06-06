@@ -1,10 +1,10 @@
 package xslice
 
 // IndexOfFormIndex
-// IndexOfFormIndex([]string{"a","b","c"}, "b", 0) // true, 1
-// IndexOfFormIndex([]string{"a","b","c"}, "b", 2) // false, 0
-// IndexOfFormIndex([]string{"a","b","c"}, "d", 0) // false, 0
-func IndexOfFormIndex[T comparable](slice []T, value T, fromIndex uint64) (found bool, index uint64) {
+// IndexOfFormIndex([]string{"a","b","c"}, "b", 0) // 1, true
+// IndexOfFormIndex([]string{"a","b","c"}, "b", 2) // 0, false
+// IndexOfFormIndex([]string{"a","b","c"}, "d", 0) // 0, false
+func IndexOfFormIndex[T comparable](slice []T, value T, fromIndex uint64) (index uint64, found bool) {
 	sliceLen := uint64(len(slice))
 	i := fromIndex
 	for ; i < sliceLen; i++ {
@@ -17,7 +17,7 @@ func IndexOfFormIndex[T comparable](slice []T, value T, fromIndex uint64) (found
 	}
 	return
 }
-func IndexOf[T comparable](slice []T, value T) (found bool, index uint64) {
+func IndexOf[T comparable](slice []T, value T) (index uint64, found bool) {
 	return IndexOfFormIndex(slice, value, 0)
 }
 
@@ -26,7 +26,7 @@ func IndexOf[T comparable](slice []T, value T) (found bool, index uint64) {
 // ContainsFormIndex([]string{"a","b","c"}, "b", 2) // false
 // ContainsFormIndex([]string{"a","b","c"}, "d", 0) // false
 func ContainsFormIndex[T comparable](slice []T, value T, fromIndex uint64) (found bool) {
-	found, _ = IndexOfFormIndex(slice, value, fromIndex)
+	_, found = IndexOfFormIndex(slice, value, fromIndex)
 	return
 }
 func Contains[T comparable](slice []T, value T) (found bool) {
@@ -35,7 +35,7 @@ func Contains[T comparable](slice []T, value T) (found bool) {
 
 // Intersection
 // Intersection([]int{1,0,8, 2}, []int{3,0,8, 4}) // []int{0,8}
-func Intersection[T comparable](slices ...[]T) (result []T) {
+func Intersection[T comparable](slices ...[]T) (unorderedResult []T) {
 	slicesLen := uint64(len(slices))
 	if slicesLen == 1 {
 		return slices[0]
@@ -48,7 +48,7 @@ func Intersection[T comparable](slices ...[]T) (result []T) {
 	}
 	for key, value := range count {
 		if value == slicesLen {
-			result = append(result, key)
+			unorderedResult = append(unorderedResult, key)
 		}
 	}
 	return
