@@ -1,6 +1,13 @@
 package xslice
 
-// IndexOfFormIndex 函数接收一个字符串切片 slice、一个字符串 s 和一个起始索引 startIndex，
+import (
+	"crypto/rand"
+	xerr "github.com/goclub/error"
+	"math/big"
+	mathRand "math/rand"
+)
+
+// IndexOfFromIndex 函数接收一个字符串切片 slice、一个字符串 s 和一个起始索引 startIndex，
 // 返回 s 在 slice 中第一次出现的索引值和一个布尔值。如果找到了 s，则返回它的索引和 true。
 // 如果没有找到 s，则返回 0 和 false。
 //
@@ -13,13 +20,11 @@ package xslice
 //   - 如果找到了 s，则返回它在 slice 中第一次出现的索引和 true。
 //   - 如果没有找到 s，则返回 0 和 false。
 // 示例：
-// IndexOfFormIndex([]string{"a","b","c"}, "b", 0) // 1, true
-// IndexOfFormIndex([]string{"a","b","c"}, "b", 2) // 0, false
-// IndexOfFormIndex([]string{"a","b","c"}, "d", 0) // 0, false
-func IndexOfFormIndex[T comparable](slice []T, value T, fromIndex uint64) (index uint64, found bool) {
-	sliceLen := uint64(len(slice))
-	i := fromIndex
-	for ; i < sliceLen; i++ {
+// IndexOfFromIndex([]string{"a","b","c"}, "b", 0) // 1, true
+// IndexOfFromIndex([]string{"a","b","c"}, "b", 2) // 0, false
+// IndexOfFromIndex([]string{"a","b","c"}, "d", 0) // 0, false
+func IndexOfFromIndex[T comparable](slice []T, value T, fromIndex int) (index int, found bool) {
+	for i := fromIndex; i < len(slice); i++ {
 		item := slice[i]
 		if item == value {
 			found = true
@@ -51,11 +56,11 @@ func IndexOfFormIndex[T comparable](slice []T, value T, fromIndex uint64) (index
 //   // i == 1, found == true
 //   i, found := IndexOf([]int{1, 2, 3, 4, 5}, 6)
 //   // i == 0, found == false
-func IndexOf[T comparable](slice []T, value T) (index uint64, found bool) {
-	return IndexOfFormIndex(slice, value, 0)
+func IndexOf[T comparable](slice []T, value T) (index int, found bool) {
+	return IndexOfFromIndex(slice, value, 0)
 }
 
-// ContainsFormIndex 函数接收一个泛型类型的切片 slice、一个泛型类型的值 value，
+// ContainsFromIndex 函数接收一个泛型类型的切片 slice、一个泛型类型的值 value，
 // 和一个起始索引 fromIndex，返回 value 是否在 slice 中从 fromIndex 开始的位置中出现。
 //
 // 参数：
@@ -68,17 +73,17 @@ func IndexOf[T comparable](slice []T, value T) (index uint64, found bool) {
 //   - 如果 value 没有在从 fromIndex 开始的位置中出现，则返回 false。
 //
 // 注意：
-// ContainsFormIndex 函数使用了泛型类型 T，并对其进行了类型约束，要求 T 实现了 comparable 接口，
+// ContainsFromIndex 函数使用了泛型类型 T，并对其进行了类型约束，要求 T 实现了 comparable 接口，
 // 这是因为在 Go 中，泛型类型的比较需要使用比较运算符，因此需要确保 T 类型实现了该接口。
 // 如果 T 类型不满足 comparable 接口，则编译时会产生错误。
 //
 // 示例：
-//   found := ContainsFormIndex([]string{"foo", "bar", "baz"}, "bar", 0)
+//   found := ContainsFromIndex([]string{"foo", "bar", "baz"}, "bar", 0)
 //   // found == true
-//   found := ContainsFormIndex([]int{1, 2, 3, 4, 5}, 6, 0)
+//   found := ContainsFromIndex([]int{1, 2, 3, 4, 5}, 6, 0)
 //   // found == false
-func ContainsFormIndex[T comparable](slice []T, value T, fromIndex uint64) (found bool) {
-	_, found = IndexOfFormIndex(slice, value, fromIndex)
+func ContainsFromIndex[T comparable](slice []T, value T, fromIndex int) (found bool) {
+	_, found = IndexOfFromIndex(slice, value, fromIndex)
 	return
 }
 
@@ -104,7 +109,7 @@ func ContainsFormIndex[T comparable](slice []T, value T, fromIndex uint64) (foun
 //   found := Contains([]int{1, 2, 3, 4, 5}, 6)
 //   // found == false
 func Contains[T comparable](slice []T, value T) (found bool) {
-	return ContainsFormIndex(slice, value, 0)
+	return ContainsFromIndex(slice, value, 0)
 }
 
 // Union 函数接收一个或多个泛型类型的切片 slices，返回这些切片的并集（即去重后的所有元素）。
@@ -296,4 +301,100 @@ func Filter[T any](slice []T, fn func(a T) (save bool)) (newSlice []T) {
 		}
 	}
 	return
+}
+
+// Find 函数在给定的切片中查找元素。
+//
+// 参数：
+//     slice: 任何类型为 T 的切片，用于在其中搜索元素。
+//     fn: 一个接受类型为 T 的元素作为输入并返回一个布尔值的函数，用于决定是否找到目标元素。
+//
+// 返回值：
+//     v: 找到的目标元素。
+//     has: 是否找到了目标元素，如果找到了为 true，否则为 false。
+//
+// 例子：
+//     intSlice := []int{1, 2, 3, 4, 5}
+//     Find(intSlice, func(a int) bool { return a == 2 }) // 2, true
+//     Find(intSlice, func(a int) bool { return a == 6 }) // 0, false
+func Find[T any](slice []T, fn func(a T) (found bool)) (v T, has bool) {
+	for _, v := range slice {
+		if fn(v) {
+			return v, true
+		}
+	}
+	return v, false
+}
+
+// Every 函数接受一个类型为 T 的切片和一个接受类型为 T 的元素并返回布尔值的函数 fn，
+// 并在切片的所有元素上调用该函数。如果所有元素都使 fn 函数返回 true，则此函数返回 true；
+// 否则返回 false。
+//
+// 参数：
+//     slice: 用于搜索元素的切片（类型为 []T）。
+//     fn: 用于检查每个元素是否符合某种条件的函数。该函数需接受类型 T 的参数，返回 bool 类型的值。
+//
+// 返回值：
+//     bool： 如果在遍历切片时，所有元素都使 fn（接受一个类型为 T 的参数并返回布尔值）函数返回 true，则返回 true；否则返回 false。
+//
+// 示例：
+//     isEven := func(a int) bool { return a%2 == 0 }
+//     allEven := Every([]int{2, 4, 6, 8, 10}, isEven) // returns true
+//
+// 注意：
+//     如果 slic 中没有元素，则此函数将返回 true。
+//     如果您的 fn 函数中需要改变原始元素，您可以将元素作为指针类型传递，以确保函数能够正确修改切片中的元素。
+func Every[T any](slice []T, fn func(a T) (ok bool)) bool {
+	for _, v := range slice {
+		if !fn(v) {
+			return false
+		}
+	}
+	return true
+}
+
+// Some 是一个泛型函数，用于检查给定的切片中是否有至少一个元素满足指定条件。
+// 切片的类型是 T，fn 参数是一个函数，该函数接受一个 T 类型的参数并返回一个布尔值，表示该元素是否符合条件。
+// 如果切片中有至少一个元素满足条件，则该函数返回 true，否则返回 false。
+// 参数：
+// - slice []T：要检查的切片。
+// - fn func(a T) (ok bool)：用于检查每个元素的函数。
+// 返回值：
+// - bool：如果至少有一个元素满足条件，则为 true；否则为 false。
+func Some[T any](slice []T, fn func(a T) (ok bool)) bool {
+	for _, v := range slice {
+		if fn(v) {
+			return true
+		}
+	}
+	return false
+}
+
+// Shuffle 使用 Fisher-Yates shuffle 算法打乱输入的切片 slice 中元素的顺序。
+// 注意，本函数会修改输入的切片 slice 中元素的顺序，而不会返回一个新的切片。
+func Shuffle[T any](slice []T) {
+	n := len(slice)
+	for i := n - 1; i > 0; i-- {
+		var random int64
+		// 使用 crypto/rand 包提供的真随机数生成器 rand.Reader 生成随机数。
+		// 如果无法获取足够的随机性，则使用 math/rand 包中的伪随机数生成器。
+		j, err := rand.Int(rand.Reader, big.NewInt(int64(i+1)))
+		if err != nil {
+			// 如果发生错误，记录错误并使用伪随机数生成器。
+			xerr.PrintStack(err)
+			random = mathRand.Int63n(int64(i + 1))
+		} else {
+			// 如果未发生错误，则获取真随机数。
+			random = j.Int64()
+		}
+		// 将当前位置 i 和随机位置 random 的元素进行交换。
+		slice[i], slice[random] = slice[random], slice[i]
+	}
+}
+
+// Copy 函数接收一个泛型类型的切片 slice，并返回一个新的切片 newSlice，
+func Copy[T any](slice []T) []T {
+	newSlice := make([]T, len(slice))
+	copy(newSlice, slice)
+	return newSlice
 }

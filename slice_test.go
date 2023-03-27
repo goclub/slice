@@ -13,57 +13,57 @@ func TestIndexOfFromIndex(t *testing.T) {
 	{
 		index, found := xslice.IndexOf(source, "a")
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, uint64(0))
+		assert.Equal(t, index, int(0))
 	}
 	{
-		index, found := xslice.IndexOfFormIndex(source, "a", 0)
+		index, found := xslice.IndexOfFromIndex(source, "a", 0)
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, uint64(0))
+		assert.Equal(t, index, int(0))
 	}
 	{
-		index, found := xslice.IndexOfFormIndex(source, "a", 1)
+		index, found := xslice.IndexOfFromIndex(source, "a", 1)
 		assert.Equal(t, found, false)
-		assert.Equal(t, index, uint64(0))
+		assert.Equal(t, index, int(0))
 	}
 	{
-		index, found := xslice.IndexOfFormIndex(source, "a", 2)
+		index, found := xslice.IndexOfFromIndex(source, "a", 2)
 		assert.Equal(t, found, false)
-		assert.Equal(t, index, uint64(0))
+		assert.Equal(t, index, int(0))
 	}
 	{
-		index, found := xslice.IndexOfFormIndex(source, "b", 0)
+		index, found := xslice.IndexOfFromIndex(source, "b", 0)
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, uint64(1))
+		assert.Equal(t, index, int(1))
 	}
 	{
-		index, found := xslice.IndexOfFormIndex(source, "b", 1)
+		index, found := xslice.IndexOfFromIndex(source, "b", 1)
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, uint64(1))
+		assert.Equal(t, index, int(1))
 	}
 	{
-		index, found := xslice.IndexOfFormIndex(source, "b", 2)
+		index, found := xslice.IndexOfFromIndex(source, "b", 2)
 		assert.Equal(t, found, false)
-		assert.Equal(t, index, uint64(0))
+		assert.Equal(t, index, int(0))
 	}
 	{
-		index, found := xslice.IndexOfFormIndex(source, "c", 0)
+		index, found := xslice.IndexOfFromIndex(source, "c", 0)
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, uint64(2))
+		assert.Equal(t, index, int(2))
 	}
 	{
-		index, found := xslice.IndexOfFormIndex(source, "c", 1)
+		index, found := xslice.IndexOfFromIndex(source, "c", 1)
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, uint64(2))
+		assert.Equal(t, index, int(2))
 	}
 	{
-		index, found := xslice.IndexOfFormIndex(source, "c", 2)
+		index, found := xslice.IndexOfFromIndex(source, "c", 2)
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, uint64(2))
+		assert.Equal(t, index, int(2))
 	}
 	{
-		index, found := xslice.IndexOfFormIndex(source, "c", 3)
+		index, found := xslice.IndexOfFromIndex(source, "c", 3)
 		assert.Equal(t, found, false)
-		assert.Equal(t, index, uint64(0))
+		assert.Equal(t, index, int(0))
 	}
 }
 func TestIntersection(t *testing.T) {
@@ -545,5 +545,75 @@ func TestFilter(t *testing.T) {
 
 	if !reflect.DeepEqual(longStringSlice, expectedLongStringSlice) {
 		t.Errorf("Filter failed, expected %v but got %v", expectedLongStringSlice, longStringSlice)
+	}
+}
+
+func TestFind(t *testing.T) {
+	intSlice := []int{1, 2, 3, 4, 5}
+
+	// Test finding an even number
+	isEven := func(a int) bool { return a%2 == 0 }
+	v, has := xslice.Find(intSlice, isEven)
+	if !has || v != 2 {
+		t.Errorf("Find failed, expected 2 but got %d", v)
+	}
+
+	// Test finding an odd number
+	isOdd := func(a int) bool { return a%2 == 1 }
+	v, has = xslice.Find(intSlice, isOdd)
+	if !has || v != 1 {
+		t.Errorf("Find failed, expected 1 but got %d", v)
+	}
+
+	// Test finding a number not in the slice
+	isNegative := func(a int) bool { return a < 0 }
+	v, has = xslice.Find(intSlice, isNegative)
+	if has {
+		t.Errorf("Find failed, expected false but got true")
+	}
+}
+
+func TestEvery(t *testing.T) {
+	// Test all elements are even
+	isEven := func(a int) bool { return a%2 == 0 }
+	allEven := xslice.Every([]int{2, 4, 6, 8, 10}, isEven)
+	if !allEven {
+		t.Errorf("Every failed, expected true but got false")
+	}
+
+	// Test some elements are odd
+	allEven = xslice.Every([]int{2, 4, 6, 7, 10}, isEven)
+	if allEven {
+		t.Errorf("Every failed, expected false but got true")
+	}
+
+	// Test an empty slice
+	allEven = xslice.Every([]int{}, isEven)
+	if !allEven {
+		t.Errorf("Every failed, expected true but got false")
+	}
+}
+
+func TestShuffle(t *testing.T) {
+	// 创建一个包含 10 个元素的整数切片。
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	for i := 0; i < 100; i++ {
+		// 记录初始顺序。
+		original := xslice.Copy(slice)
+
+		// 打乱切片顺序。
+		xslice.Shuffle(slice)
+
+		// 检查切片是否被打乱。
+		if reflect.DeepEqual(slice, original) {
+			t.Errorf("Slice not shuffled: %v", slice)
+		}
+
+		// 检查切片中的元素是否保持不变。
+		for _, elem := range original {
+			if !xslice.Contains(slice, elem) {
+				t.Errorf("Element missing from shuffled slice: %d", elem)
+			}
+		}
 	}
 }
