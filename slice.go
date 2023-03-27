@@ -277,3 +277,23 @@ func Last[T any](slice []T) (v T, has bool) {
 	}
 	return slice[n-1], true
 }
+
+// Filter 函数接收一个泛型类型的切片 slice 和一个函数 fn，
+// 返回一个新的切片 newSlice，该切片中包含了 slice 中所有满足 fn 函数条件的元素。
+//	- slice: 一个泛型类型的切片，包含要过滤的元素。
+//	- fn: 一个函数，用于过滤 slice 中的元素。
+//	- newSlice: 一个泛型类型的切片，包含了 slice 中所有满足 fn 函数条件的元素。
+// 示例：
+//   slice := []int{1, 2, 3, 4, 5}
+//   newSlice := Filter(slice, func(a int) (save bool) {
+//       return a > 3
+//   })
+//   // newSlice == []int{4, 5}
+func Filter[T any](slice []T, fn func(a T) (save bool)) (newSlice []T) {
+	for _, v := range slice {
+		if fn(v) {
+			newSlice = append(newSlice, v)
+		}
+	}
+	return
+}

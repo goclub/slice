@@ -523,3 +523,27 @@ func TestDifferenceIntSlice(t *testing.T) {
 		t.Errorf("Test case 4 failed: expected %v, but got %v", expected4, output4)
 	}
 }
+
+func TestFilter(t *testing.T) {
+	intSlice := []int{1, 2, 3, 4, 5}
+	evenFilter := func(a int) bool {
+		return a%2 == 0
+	}
+	evenSlice := xslice.Filter(intSlice, evenFilter)
+	expectedEvenSlice := []int{2, 4}
+
+	if !reflect.DeepEqual(evenSlice, expectedEvenSlice) {
+		t.Errorf("Filter failed, expected %v but got %v", expectedEvenSlice, evenSlice)
+	}
+
+	stringSlice := []string{"Hello", "World", "Go"}
+	lengthFilter := func(a string) bool {
+		return len(a) > 3
+	}
+	longStringSlice := xslice.Filter(stringSlice, lengthFilter)
+	expectedLongStringSlice := []string{"Hello", "World"}
+
+	if !reflect.DeepEqual(longStringSlice, expectedLongStringSlice) {
+		t.Errorf("Filter failed, expected %v but got %v", expectedLongStringSlice, longStringSlice)
+	}
+}

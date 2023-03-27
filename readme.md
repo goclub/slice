@@ -2,6 +2,12 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/goclub/slice.svg)](https://pkg.go.dev/github.com/goclub/slice)
 
+## 安装
+
+```bash
+go get github.com/goclub/slice
+```
+
 xslice是一个Go语言中的切片工具包，提供了一些常用的切片操作函数，如查找、去重、合并等。
 
 xslice中包含以下函数：
@@ -36,6 +42,9 @@ func First(slice []T) (v T, has bool)
 
 // Last 返回切片中的最后一个元素和是否存在
 func Last(slice []T) (v T, has bool)
+
+// Filter 过滤切片中的元素，返回满足条件的元素组成的新切片
+func Filter[T any](slice []T, fn func(a T) (save bool)) (newSlice []T)
 ```
 
 这些函数都支持泛型类型 T，并对其进行了类型约束，要求 T 实现了 comparable 接口，因为在 Go 中，泛型类型的比较需要使用比较运算符，因此需要确保 T 类型实现了该接口。如果 T 类型不满足 comparable 接口，则编译时会产生错误。
