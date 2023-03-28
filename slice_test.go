@@ -661,12 +661,8 @@ func TestPluck(t *testing.T) {
 		{"Bob", 25},
 		{"Cathy", 22},
 	}
-
 	// 提取人名的函数
-	extractName := func(p Person) string {
-		return p.Name
-	}
-
+	extractName := func(p Person) string { return p.Name }
 	// 使用 Pluck 函数提取 persons 中所有人的名字
 	assert.Equal(t, Pluck(persons, extractName), []string{"Alice", "Bob", "Cathy"})
 }
