@@ -24,6 +24,9 @@ import (
 // IndexOfFromIndex([]string{"a","b","c"}, "b", 2) // 0, false
 // IndexOfFromIndex([]string{"a","b","c"}, "d", 0) // 0, false
 func IndexOfFromIndex[T comparable](slice []T, value T, fromIndex int) (index int, found bool) {
+	if fromIndex >= len(slice) {
+		return 0, false
+	}
 	for i := fromIndex; i < len(slice); i++ {
 		item := slice[i]
 		if item == value {
@@ -372,6 +375,9 @@ func Some[T any](slice []T, fn func(a T) (ok bool)) bool {
 
 // Shuffle 使用 Fisher-Yates shuffle 算法打乱输入的切片 slice 中元素的顺序。
 // 注意，本函数会修改输入的切片 slice 中元素的顺序，而不会返回一个新的切片。
+// 如果你需要保留原始切片的顺序，可以使用 Copy 函数复制一个新的切片。
+// 然后对新切片进行 Shuffle 操作。
+// 例如: Shuffle(Copy(slice))
 func Shuffle[T any](slice []T) {
 	n := len(slice)
 	for i := n - 1; i > 0; i-- {
@@ -396,5 +402,44 @@ func Shuffle[T any](slice []T) {
 func Copy[T any](slice []T) []T {
 	newSlice := make([]T, len(slice))
 	copy(newSlice, slice)
+	return newSlice
+}
+
+// Pluck 是一个通用函数，用于从切片中提取特定属性并生成一个新的切片。
+// 它接收两个参数：
+// - slice: 类型为 []T 的切片，其中 T 是任意类型。
+// - fn: 一个将类型为 T 的元素作为输入并返回类型为 Attr 的值的函数，其中 Attr 也是任意类型。
+//
+// 该函数会遍历输入的切片，并对每个元素应用提供的函数 fn，将结果存储在一个新的 Attr 类型的切片中。
+// 最后，该函数返回新生成的切片。
+//
+// 示例:
+//
+// type Person struct {
+// Name string
+// Age int
+// }
+//
+// persons := []Person{
+// {"Alice", 30},
+// {"Bob", 25},
+// {"Cathy", 22},
+// }
+//
+// // 提取人名的函数
+// extractName := func(p Person) string {
+// return p.Name
+// }
+//
+// // 使用 Pluck 函数提取 persons 中所有人的名字
+// names := Pluck(persons, extractName)
+//
+// 输出:
+// names: []string{"Alice", "Bob", "Cathy"}
+func Pluck[T any, Attr any](slice []T, fn func(v T) Attr) []Attr {
+	newSlice := make([]Attr, len(slice))
+	for i, v := range slice {
+		newSlice[i] = fn(v)
+	}
 	return newSlice
 }
