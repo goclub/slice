@@ -15,57 +15,57 @@ func TestIndexOfFromIndex(t *testing.T) {
 	{
 		index, found := IndexOf(source, "a")
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, int(0))
+		assert.Equal(t, index, uint64(0))
 	}
 	{
 		index, found := IndexOfFromIndex(source, "a", 0)
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, int(0))
+		assert.Equal(t, index, uint64(0))
 	}
 	{
 		index, found := IndexOfFromIndex(source, "a", 1)
 		assert.Equal(t, found, false)
-		assert.Equal(t, index, int(0))
+		assert.Equal(t, index, uint64(0))
 	}
 	{
 		index, found := IndexOfFromIndex(source, "a", 2)
 		assert.Equal(t, found, false)
-		assert.Equal(t, index, int(0))
+		assert.Equal(t, index, uint64(0))
 	}
 	{
 		index, found := IndexOfFromIndex(source, "b", 0)
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, int(1))
+		assert.Equal(t, index, uint64(1))
 	}
 	{
 		index, found := IndexOfFromIndex(source, "b", 1)
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, int(1))
+		assert.Equal(t, index, uint64(1))
 	}
 	{
 		index, found := IndexOfFromIndex(source, "b", 2)
 		assert.Equal(t, found, false)
-		assert.Equal(t, index, int(0))
+		assert.Equal(t, index, uint64(0))
 	}
 	{
 		index, found := IndexOfFromIndex(source, "c", 0)
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, int(2))
+		assert.Equal(t, index, uint64(2))
 	}
 	{
 		index, found := IndexOfFromIndex(source, "c", 1)
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, int(2))
+		assert.Equal(t, index, uint64(2))
 	}
 	{
 		index, found := IndexOfFromIndex(source, "c", 2)
 		assert.Equal(t, found, true)
-		assert.Equal(t, index, int(2))
+		assert.Equal(t, index, uint64(2))
 	}
 	{
 		index, found := IndexOfFromIndex(source, "c", 3)
 		assert.Equal(t, found, false)
-		assert.Equal(t, index, int(0))
+		assert.Equal(t, index, uint64(0))
 	}
 }
 func TestIntersection(t *testing.T) {

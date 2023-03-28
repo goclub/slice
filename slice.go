@@ -23,11 +23,11 @@ import (
 // IndexOfFromIndex([]string{"a","b","c"}, "b", 0) // 1, true
 // IndexOfFromIndex([]string{"a","b","c"}, "b", 2) // 0, false
 // IndexOfFromIndex([]string{"a","b","c"}, "d", 0) // 0, false
-func IndexOfFromIndex[T comparable](slice []T, value T, fromIndex int) (index int, found bool) {
-	if fromIndex >= len(slice) {
+func IndexOfFromIndex[T comparable](slice []T, value T, fromIndex uint64) (index uint64, found bool) {
+	if int(fromIndex) >= len(slice) {
 		return 0, false
 	}
-	for i := fromIndex; i < len(slice); i++ {
+	for i := fromIndex; i < uint64(len(slice)); i++ {
 		item := slice[i]
 		if item == value {
 			found = true
@@ -59,7 +59,7 @@ func IndexOfFromIndex[T comparable](slice []T, value T, fromIndex int) (index in
 //   // i == 1, found == true
 //   i, found := IndexOf([]int{1, 2, 3, 4, 5}, 6)
 //   // i == 0, found == false
-func IndexOf[T comparable](slice []T, value T) (index int, found bool) {
+func IndexOf[T comparable](slice []T, value T) (index uint64, found bool) {
 	return IndexOfFromIndex(slice, value, 0)
 }
 
@@ -85,7 +85,7 @@ func IndexOf[T comparable](slice []T, value T) (index int, found bool) {
 //   // found == true
 //   found := ContainsFromIndex([]int{1, 2, 3, 4, 5}, 6, 0)
 //   // found == false
-func ContainsFromIndex[T comparable](slice []T, value T, fromIndex int) (found bool) {
+func ContainsFromIndex[T comparable](slice []T, value T, fromIndex uint64) (found bool) {
 	_, found = IndexOfFromIndex(slice, value, fromIndex)
 	return
 }
