@@ -7,10 +7,7 @@
 ```bash
 go get github.com/goclub/slice
 ```
-
-xslice是一个Go语言中的切片工具包，提供了一些常用的切片操作函数，如查找、去重、合并等。
-
-xslice中包含以下函数：
+goclub/slice 提供了一些常用的切片操作函数，如查找、去重、合并等。
 
 ```go
 // IndexOfFormIndex 返回从给定索引（包括该索引）开始在切片中搜索给定值的第一个匹配项的索引和是否找到

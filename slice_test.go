@@ -1,10 +1,13 @@
-package xslice
+package sl
 
 import (
 	"github.com/stretchr/testify/assert"
+	"testing"
+)
+
+import (
 	"reflect"
 	"sort"
-	"testing"
 )
 
 func TestIndexOfFromIndex(t *testing.T) {

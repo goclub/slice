@@ -1,4 +1,4 @@
-package xslice
+package sl
 
 import (
 	"crypto/rand"
