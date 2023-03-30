@@ -5,6 +5,7 @@ import (
 	xerr "github.com/goclub/error"
 	"math/big"
 	mathRand "math/rand"
+	"sort"
 )
 
 // IndexOfFromIndex 函数接收一个字符串切片 slice、一个字符串 s 和一个起始索引 startIndex，
@@ -306,6 +307,28 @@ func Filter[T any](slice []T, fn func(a T) (save bool)) (newSlice []T) {
 	return
 }
 
+// Map 函数接受一个任意类型 T1 的切片和一个函数 fn，该函数将 T1 类型的值转换为 T2 类型的值
+// 返回一个 T2 类型的切片，其中每个元素都是通过 fn 函数将相应 T1 类型切片元素转换而来的
+// 示例：
+//   toUpper := func(a string) string { return strings.ToUpper(a) }
+//   upper := Map([]string{"a", "b", "c"}, toUpper) // returns []string{"A", "B", "C"}
+// 结构体示例:
+//   type Person struct {
+//     Name string
+//     Age int
+//   }
+//   type OnlyName struct { Name string}
+//   toName := func(p Person) OnlyName { return OnlyName{p.Name} }
+//   names := Map([]Person{{"Alice", 30}, {"Bob", 25}, {"Cathy", 22}}, toName)
+//  // returns []OnlyName{{"Alice"}, {"Bob"}, {"Cathy"}}
+func Map[T1 any, T2 any](slice []T1, fn func(v T1) T2) []T2 {
+	newSlice := make([]T2, len(slice))
+	for i, v := range slice {
+		newSlice[i] = fn(v)
+	}
+	return newSlice
+}
+
 // Find 函数在给定的切片中查找元素。
 //
 // 参数：
@@ -442,4 +465,34 @@ func Pluck[T any, Attr any](slice []T, fn func(v T) Attr) []Attr {
 		newSlice[i] = fn(v)
 	}
 	return newSlice
+}
+
+// Sort 函数接收一个泛型类型的切片 slice 和一个用于比较两个元素的函数 less，
+// 并使用 less 函数对切片进行排序。
+// 该函数会修改输入的切片 slice，而不会返回一个新的切片。
+func Sort[T any](slice []T, less func(a, b T) bool) {
+	sort.Slice(slice, func(i, j int) bool {
+		return less(slice[i], slice[j])
+	})
+}
+
+// Group 函数接受一个任意类型 V 的切片和一个从 V 到可比较类型 K 的映射函数 fn，
+// 返回一个以 K 为键、值为 V 切片的 map，其中每个键对应一个由满足 fn(v) == k 的 V 值构成的切片。
+// 如果 fn 函数返回相同的键，则对应的 V 值将被放入同一个切片中。
+// 示例
+//  input := []string{"apple", "banana", "orange", "pear", "kiwi"}
+//  result := Group(input, func(s string) int { return len(s) })
+//  result is map{
+// 	  3:[pear]
+// 	  4:[kiwi]
+// 	  5:[apple]
+// 	  6:[orange banana]
+//  }
+func Group[V any, K comparable](slice []V, fn func(v V) (k K)) map[K][]V {
+	result := make(map[K][]V)
+	for _, v := range slice {
+		key := fn(v)
+		result[key] = append(result[key], v)
+	}
+	return result
 }

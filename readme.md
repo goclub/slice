@@ -43,6 +43,9 @@ func Last(slice []T) (v T, has bool)
 // Filter 过滤切片中的元素，返回满足条件的元素组成的新切片
 func Filter[T any](slice []T, fn func(a T) (save bool)) (newSlice []T)
 
+// Map 函数接受一个任意类型 T1 的切片和一个函数 fn，该函数将 T1 类型的值转换为 T2 类型的值
+func Map[T1 any, T2 any](slice []T1, fn func(v T1) T2) []T2
+
 // Find 返回满足条件的第一个元素和是否存在
 func Find[T any](slice []T, fn func(a T) (found bool)) (v T, has bool)
 
@@ -63,7 +66,13 @@ func Pluck[T any, Attr any](slice []T, fn func(v T) Attr) []Attr
 func Copy[T any](slice []T) []T
 
 // Pluck 是一个通用函数，用于从切片中提取特定属性并生成一个新的切片。
-func Pluck[T any, Attr any](slice []T, fn func(v T) Attr) []Attr 
+func Pluck[T any, Attr any](slice []T, fn func(v T) Attr) []Attr
+
+// Sort 函数接收一个泛型类型的切片 slice 和一个用于比较两个元素的函数 less，
+func Sort[T any](slice []T, less func(a, b T) bool)
+
+// Group 函数接受一个任意类型 V 的切片和一个从 V 到可比较类型 K 的映射函数 fn，
+func Group[V any, K comparable](slice []V, fn func(v V) (k K)) map[K][]V 
 ```
 
 这些函数都支持泛型类型 T，并对其进行了类型约束，要求 T 实现了 comparable 接口，因为在 Go 中，泛型类型的比较需要使用比较运算符，因此需要确保 T 类型实现了该接口。如果 T 类型不满足 comparable 接口，则编译时会产生错误。

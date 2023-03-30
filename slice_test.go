@@ -683,3 +683,46 @@ func TestCopy(t *testing.T) {
 		t.Errorf("Copy(%v) = %v, want %v", slice2, result2, expected2)
 	}
 }
+
+func TestMap(t *testing.T) {
+	input := []int{1, 2, 3}
+	expected := []int{2, 3, 4}
+	output := Map(input, func(v int) int { return v + 1 })
+	if !reflect.DeepEqual(output, expected) {
+		t.Errorf("Map(%v, fn) = %v; want %v", input, output, expected)
+	}
+}
+
+func TestSort(t *testing.T) {
+	// 测试用例 1：对整数类型的切片进行排序
+	input1 := []int{5, 2, 7, 1, 9}
+	expected1 := []int{1, 2, 5, 7, 9}
+	Sort(input1, func(a, b int) bool {
+		return a < b
+	})
+	if !reflect.DeepEqual(input1, expected1) {
+		t.Errorf("Sort(%v, less) = %v; want %v", input1, input1, expected1)
+	}
+
+	// 测试用例 2：对字符串类型的切片进行排序
+	input2 := []string{"apple", "pear", "banana", "orange"}
+	expected2 := []string{"apple", "banana", "orange", "pear"}
+	Sort(input2, func(a, b string) bool {
+		return a < b
+	})
+	if !reflect.DeepEqual(input2, expected2) {
+		t.Errorf("Sort(%v, less) = %v; want %v", input2, input2, expected2)
+	}
+}
+
+func TestGroup(t *testing.T) {
+	input := []int{1, 2, 3, 4, 5}
+	expected := map[uint64][]int{
+		0: {2, 4},
+		1: {1, 3, 5},
+	}
+	output := Group(input, func(v int) uint64 { return uint64(v % 2) })
+	if !reflect.DeepEqual(output, expected) {
+		t.Errorf("Group(%v, fn) = %v; want %v", input, output, expected)
+	}
+}
