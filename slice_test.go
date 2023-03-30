@@ -726,3 +726,14 @@ func TestGroup(t *testing.T) {
 		t.Errorf("Group(%v, fn) = %v; want %v", input, output, expected)
 	}
 }
+
+func TestSortStable(t *testing.T) {
+	input := []int{5, 2, 7, 1, 9, 2}
+	expected := []int{2, 2, 1, 5, 7, 9}
+	SortStable(input, func(a, b int) bool {
+		return a < b
+	})
+	if !reflect.DeepEqual(input, expected) {
+		t.Errorf("SortStable(%v, less) = %v; want %v", input, input, expected)
+	}
+}

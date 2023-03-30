@@ -476,6 +476,14 @@ func Sort[T any](slice []T, less func(a, b T) bool) {
 	})
 }
 
+// SortStable 函数接收一个泛型类型的切片 slice 和一个用于比较两个元素的函数 less，
+// 它与 Sort 的区别是，SortStable 会保持相等元素的相对顺序不变。
+func SortStable[T any](slice []T, less func(a, b T) bool) {
+	sort.SliceStable(slice, func(i, j int) bool {
+		return less(slice[i], slice[j])
+	})
+}
+
 // Group 函数接受一个任意类型 V 的切片和一个从 V 到可比较类型 K 的映射函数 fn，
 // 返回一个以 K 为键、值为 V 切片的 map，其中每个键对应一个由满足 fn(v) == k 的 V 值构成的切片。
 // 如果 fn 函数返回相同的键，则对应的 V 值将被放入同一个切片中。

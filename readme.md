@@ -71,6 +71,10 @@ func Pluck[T any, Attr any](slice []T, fn func(v T) Attr) []Attr
 // Sort 函数接收一个泛型类型的切片 slice 和一个用于比较两个元素的函数 less，
 func Sort[T any](slice []T, less func(a, b T) bool)
 
+// SortStable 函数接收一个泛型类型的切片 slice 和一个用于比较两个元素的函数 less，
+// 它与 Sort 的区别是，SortStable 会保持相等元素的相对顺序不变。
+func SortStable[T any](slice []T, less func(a, b T) bool) 
+
 // Group 函数接受一个任意类型 V 的切片和一个从 V 到可比较类型 K 的映射函数 fn，
 func Group[V any, K comparable](slice []V, fn func(v V) (k K)) map[K][]V 
 ```
