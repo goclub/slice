@@ -2,7 +2,6 @@ package sl
 
 import (
 	"github.com/stretchr/testify/assert"
-	"log"
 	"testing"
 )
 
@@ -616,7 +615,7 @@ func TestSome(t *testing.T) {
 func TestShuffle(t *testing.T) {
 	// 创建一个包含 10 个元素的整数切片。
 	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1000; i++ {
 		// 记录初始顺序。
 		original := Copy(slice)
 
@@ -646,7 +645,6 @@ func TestShuffle_2(t *testing.T) {
 	{
 		slice := []int{1, 2}
 		Shuffle(slice)
-		log.Print(slice)
 	}
 }
 
@@ -741,20 +739,9 @@ func TestGroup(t *testing.T) {
 	}
 }
 
-func TestSortStable(t *testing.T) {
-	input := []int{5, 2, 7, 1, 9, 2}
-	expected := []int{2, 2, 1, 5, 7, 9}
-	SortStable(input, func(a, b int) bool {
-		return a < b
-	})
-	if !reflect.DeepEqual(input, expected) {
-		t.Errorf("SortStable(%v, less) = %v; want %v", input, input, expected)
-	}
-}
-
 func TestRandElem(t *testing.T) {
 	slice := []int{1, 2, 3, 4, 5}
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1000; i++ {
 		elem, has := RandElem(slice)
 		if !has {
 			t.Error("RandElem returned false for a non-empty slice")

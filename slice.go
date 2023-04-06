@@ -398,11 +398,9 @@ func Some[T any](slice []T, fn func(a T) (ok bool)) bool {
 // 然后对新切片进行 Shuffle 操作。
 // 例如: Shuffle(Copy(slice))
 func Shuffle[T any](slice []T) {
-	n := len(slice)
-	for i := n - 1; i > 0; i-- {
-		random := rangeUint64(0, uint64(i+1))
-		// 将当前位置 i 和随机位置 random 的元素进行交换。
-		slice[i], slice[random] = slice[random], slice[i]
+	for i := len(slice) - 1; i > 0; i-- {
+		j := rangeUint64(0, uint64(i))
+		slice[i], slice[j] = slice[j], slice[i]
 	}
 }
 
@@ -457,14 +455,6 @@ func Pluck[T any, Attr any](slice []T, fn func(v T) Attr) []Attr {
 // 该函数会修改输入的切片 slice，而不会返回一个新的切片。
 func Sort[T any](slice []T, less func(a, b T) bool) {
 	sort.Slice(slice, func(i, j int) bool {
-		return less(slice[i], slice[j])
-	})
-}
-
-// SortStable 函数接收一个泛型类型的切片 slice 和一个用于比较两个元素的函数 less，
-// 它与 Sort 的区别是，SortStable 会保持相等元素的相对顺序不变。
-func SortStable[T any](slice []T, less func(a, b T) bool) {
-	sort.SliceStable(slice, func(i, j int) bool {
 		return less(slice[i], slice[j])
 	})
 }
