@@ -76,7 +76,10 @@ func Sort[T any](slice []T, less func(a, b T) bool)
 func SortStable[T any](slice []T, less func(a, b T) bool) 
 
 // Group 函数接受一个任意类型 V 的切片和一个从 V 到可比较类型 K 的映射函数 fn，
-func Group[V any, K comparable](slice []V, fn func(v V) (k K)) map[K][]V 
+func Group[V any, K comparable](slice []V, fn func(v V) (k K)) map[K][]V
+
+// RandElem 函数从给定的切片中随机选择一个元素，并返回一个布尔值表示是否找到有效元素。
+func RandElem[T any](slice []T) (elem T, has bool) 
 ```
 
 这些函数都支持泛型类型 T，并对其进行了类型约束，要求 T 实现了 comparable 接口，因为在 Go 中，泛型类型的比较需要使用比较运算符，因此需要确保 T 类型实现了该接口。如果 T 类型不满足 comparable 接口，则编译时会产生错误。

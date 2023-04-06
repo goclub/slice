@@ -1,10 +1,6 @@
 package sl
 
 import (
-	"crypto/rand"
-	xerr "github.com/goclub/error"
-	"math/big"
-	mathRand "math/rand"
 	"sort"
 )
 
@@ -404,18 +400,7 @@ func Some[T any](slice []T, fn func(a T) (ok bool)) bool {
 func Shuffle[T any](slice []T) {
 	n := len(slice)
 	for i := n - 1; i > 0; i-- {
-		var random int64
-		// 使用 crypto/rand 包提供的真随机数生成器 rand.Reader 生成随机数。
-		// 如果无法获取足够的随机性，则使用 math/rand 包中的伪随机数生成器。
-		j, err := rand.Int(rand.Reader, big.NewInt(int64(i+1)))
-		if err != nil {
-			// 如果发生错误，记录错误并使用伪随机数生成器。
-			xerr.PrintStack(err)
-			random = mathRand.Int63n(int64(i + 1))
-		} else {
-			// 如果未发生错误，则获取真随机数。
-			random = j.Int64()
-		}
+		random := rangeUint64(0, uint64(i+1))
 		// 将当前位置 i 和随机位置 random 的元素进行交换。
 		slice[i], slice[random] = slice[random], slice[i]
 	}
@@ -503,4 +488,12 @@ func Group[V any, K comparable](slice []V, fn func(v V) (k K)) map[K][]V {
 		result[key] = append(result[key], v)
 	}
 	return result
+}
+
+// RandElem 函数从给定的切片中随机选择一个元素，并返回一个布尔值表示是否找到有效元素。
+func RandElem[T any](slice []T) (elem T, has bool) {
+	if len(slice) == 0 {
+		return
+	}
+	return slice[rangeUint64(0, uint64(len(slice)-1))], true
 }
