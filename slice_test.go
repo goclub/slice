@@ -69,32 +69,94 @@ func TestIndexOfFromIndex(t *testing.T) {
 	}
 }
 func TestIntersection(t *testing.T) {
-	{
-		result := Intersection(
-			[]int{1},
-		)
-		assert.Equal(t, result, []int{1})
+	tt := []struct {
+		ins [][]string
+		out []string
+	}{
+		{
+			[][]string{
+				{},
+			},
+			[]string{},
+		},
+		{
+			[][]string{
+				{"1"},
+			},
+			[]string{"1"},
+		},
+		{
+			[][]string{
+				{"1", "2"},
+			},
+			[]string{"1", "2"},
+		},
+		{
+			[][]string{
+				{"1", "2"},
+				{"1"},
+			},
+			[]string{"1"},
+		},
+		{
+			[][]string{
+				{"1", "2"},
+				{"1"},
+				{"1"},
+			},
+			[]string{"1"},
+		},
+		{
+			[][]string{
+				{"1", "2"},
+				{"1"},
+				{"1", "3"},
+			},
+			[]string{"1"},
+		},
+		{
+			[][]string{
+				{"1", "2"},
+				{"1"},
+				{"1", "2", "3"},
+			},
+			[]string{"1"},
+		},
+		{
+			[][]string{
+				{"1", "2"},
+				{"1", "2"},
+				{"1", "2", "3"},
+			},
+			[]string{"1", "2"},
+		},
+		{
+			[][]string{
+				{"1", "1", "1", "1", "1"},
+				{"1", "1", "1", "1", "1"},
+				{"1", "1", "1", "1", "1"},
+			},
+			[]string{"1"},
+		},
+		{
+			[][]string{
+				{"1", "1", "1", "1", "1", "2"},
+				{"1", "1", "1", "1", "1", "2", "2"},
+				{"1", "1", "1", "1", "1", "2", "2"},
+			},
+			[]string{"1", "2"},
+		},
+		{
+			[][]string{
+				{"310000", "310000", "310113"},
+				{"110000"},
+			},
+			[]string{},
+		},
 	}
-	{
-		result := Intersection(
-			[]int{1, 111, 222, 333, 2, 3},
-			[]int{4, 111, 222, 333, 5, 6},
-		)
-		assert.Equal(t, len(result), 3)
-		Contains(result, 111)
-		Contains(result, 222)
-		Contains(result, 333)
-	}
-	{
-		result := Intersection(
-			[]int{1, 111, 222, 333, 2, 3},
-			[]int{4, 111, 222, 333, 5, 6},
-			[]int{7, 111, 222, 333, 8, 9},
-		)
-		assert.Equal(t, len(result), 3)
-		Contains(result, 111)
-		Contains(result, 222)
-		Contains(result, 333)
+
+	for i, item := range tt {
+		assert.Equal(t, Intersection(item.ins...), item.out, i)
 	}
 }
 

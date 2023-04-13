@@ -143,41 +143,34 @@ func Union[T comparable](slices ...[]T) (unorderedResult []T) {
 	return
 }
 
-// Intersection 函数接收一个或多个泛型类型的切片 slices，返回这些切片的交集（即所有切片中都存在的元素）。
-// 返回的结果无序。
-//
-// 参数：
-//   - slices: 一个或多个泛型类型的切片，包含要计算交集的元素。
-//
-// 返回值：
-//   - 返回一个新的泛型类型的切片 unorderedResult，包含所有 slices 中的交集元素。
-//
-// 注意：
-// Intersection 函数使用了泛型类型 T，并对其进行了类型约束，要求 T 实现了 comparable 接口，
-// 这是因为在 Go 中，泛型类型的比较需要使用比较运算符，因此需要确保 T 类型实现了该接口。
-// 如果 T 类型不满足 comparable 接口，则编译时会产生错误。
-//
-// 示例：
-//   unorderedResult := Intersection([]int{1, 0, 8, 2}, []int{3, 0, 8, 4})
-//   // unorderedResult == []int{0, 8}
-func Intersection[T comparable](slices ...[]T) (unorderedResult []T) {
-	unorderedResult = []T{}
-	slicesLen := uint64(len(slices))
-	if slicesLen == 1 {
+func Intersection[T comparable](slices ...[]T) []T {
+	switch len(slices) {
+	case 0:
+		return nil
+	case 1:
 		return slices[0]
-	}
-	count := map[T]uint64{}
-	for _, slice := range slices {
-		for _, item := range slice {
-			count[item]++
+	case 2:
+		l1 := slices[0]
+		l2 := slices[1]
+		guessLen := len(l1)
+		if len(l1) > len(l2) {
+			guessLen = len(l2)
 		}
-	}
-	for key, value := range count {
-		if value == slicesLen {
-			unorderedResult = append(unorderedResult, key)
+		alreadyAdded := map[T]bool{}
+		result := make([]T, 0, guessLen)
+		for _, item := range l1 {
+			if !alreadyAdded[item] && Contains(l2, item) {
+				result = append(result, item)
+				alreadyAdded[item] = true
+			}
 		}
+		return result
 	}
-	return
+	result := slices[0]
+	for _, s := range slices[1:] {
+		result = Intersection(result, s)
+	}
+	return result
 }
 
 // Difference
