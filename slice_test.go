@@ -586,6 +586,18 @@ func TestDifferenceIntSlice(t *testing.T) {
 	if !reflect.DeepEqual(output4, expected4) {
 		t.Errorf("Test case 4 failed: expected %v, but got %v", expected4, output4)
 	}
+	// Test case 5
+	{
+		input := [][]int{
+			{1, 1, 2, 3},
+			{3},
+		}
+		expected := []int{1, 2}
+		output := Difference(input...)
+		sort.Ints(output)
+		assert.Equal(t, expected, output)
+
+	}
 }
 
 func TestFilter(t *testing.T) {

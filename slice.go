@@ -187,6 +187,12 @@ func Intersection[T comparable](slices ...[]T) []T {
 // Difference([]int{1, 2, 3}, []int{2, 3, 4}, []int{3, 4, 5}) // []int{1}
 func Difference[T comparable](slices ...[]T) (result []T) {
 	result = []T{}
+	// TOOD: 换性能更好的实现方式
+	var newSlice [][]T
+	for _, slice := range slices {
+		newSlice = append(newSlice, Unique(slice))
+	}
+	slices = newSlice
 	if len(slices) == 0 {
 		return
 	}
