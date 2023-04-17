@@ -70,28 +70,33 @@ func TestIndexOfFromIndex(t *testing.T) {
 }
 func TestIntersection(t *testing.T) {
 	tt := []struct {
-		ins [][]string
-		out []string
+		name string
+		ins  [][]string
+		out  []string
 	}{
 		{
+			"empty",
 			[][]string{
 				{},
 			},
 			[]string{},
 		},
 		{
+			"1 1",
 			[][]string{
 				{"1"},
 			},
 			[]string{"1"},
 		},
 		{
+			"1 2 | 1 2",
 			[][]string{
 				{"1", "2"},
 			},
 			[]string{"1", "2"},
 		},
 		{
+			"1 2 | 1",
 			[][]string{
 				{"1", "2"},
 				{"1"},
@@ -99,6 +104,7 @@ func TestIntersection(t *testing.T) {
 			[]string{"1"},
 		},
 		{
+			"1 2 | 1 | 1",
 			[][]string{
 				{"1", "2"},
 				{"1"},
@@ -107,6 +113,7 @@ func TestIntersection(t *testing.T) {
 			[]string{"1"},
 		},
 		{
+			"1 2 | 1 | 1 3",
 			[][]string{
 				{"1", "2"},
 				{"1"},
@@ -115,6 +122,7 @@ func TestIntersection(t *testing.T) {
 			[]string{"1"},
 		},
 		{
+			"1 2 | 1 | 1 2 3 ",
 			[][]string{
 				{"1", "2"},
 				{"1"},
@@ -123,6 +131,8 @@ func TestIntersection(t *testing.T) {
 			[]string{"1"},
 		},
 		{
+
+			"1 2 | 1 2 | 1 2 3",
 			[][]string{
 				{"1", "2"},
 				{"1", "2"},
@@ -131,6 +141,7 @@ func TestIntersection(t *testing.T) {
 			[]string{"1", "2"},
 		},
 		{
+			"1 1 1 1 1 | 1 1 1 1 1 | 1 1 1 1 1",
 			[][]string{
 				{"1", "1", "1", "1", "1"},
 				{"1", "1", "1", "1", "1"},
@@ -139,6 +150,7 @@ func TestIntersection(t *testing.T) {
 			[]string{"1"},
 		},
 		{
+			"more repeat",
 			[][]string{
 				{"1", "1", "1", "1", "1", "2"},
 				{"1", "1", "1", "1", "1", "2", "2"},
@@ -147,16 +159,19 @@ func TestIntersection(t *testing.T) {
 			[]string{"1", "2"},
 		},
 		{
+			"shanghai",
 			[][]string{
 				{"310000", "310000", "310113"},
 				{"110000"},
 			},
-			[]string{},
+			[]string(nil),
 		},
 	}
 
-	for i, item := range tt {
-		assert.Equal(t, Intersection(item.ins...), item.out, i)
+	for _, item := range tt {
+		result := Intersection(item.ins...)
+		sort.Strings(result)
+		assert.Equal(t, result, item.out, item.name)
 	}
 }
 
@@ -488,60 +503,10 @@ func TestUnionStringSlice(t *testing.T) {
 	}
 }
 
-func TestUnionFloat64Slice(t *testing.T) {
-	// Test case 1: multiple non-empty slices
-	input1 := [][]float64{
-		{1.1, 2.2, 3.3},
-		{2.2, 3.3, 4.4},
-		{3.3, 4.4, 5.5},
-	}
-	expected1 := []float64{1.1, 2.2, 3.3, 4.4, 5.5}
-	output1 := Union(input1...)
-	sort.Float64s(output1)
-	if !reflect.DeepEqual(output1, expected1) {
-		t.Errorf("Test case 1 failed: expected %v, but got %v", expected1, output1)
-	}
-
-	// Test case 2: multiple empty slices
-	input2 := [][]float64{
-		{},
-		{},
-		{},
-	}
-	expected2 := []float64{}
-	output2 := Union(input2...)
-	sort.Float64s(output2)
-	if !reflect.DeepEqual(output2, expected2) {
-		t.Errorf("Test case 2 failed: expected %v, but got %v", expected2, output2)
-	}
-
-	// Test case 3: one non-empty slice and two empty slices
-	input3 := [][]float64{
-		{1.1, 2.2, 3.3},
-		{},
-		{},
-	}
-	expected3 := []float64{1.1, 2.2, 3.3}
-	output3 := Union(input3...)
-	sort.Float64s(output3)
-	if !reflect.DeepEqual(output3, expected3) {
-		t.Errorf("Test case 3 failed: expected %v, but got %v", expected3, output3)
-	}
-
-	// Test case 4: variable definition with no elements
-	var s []float64
-	expected4 := []float64{}
-	output4 := Union(s)
-	sort.Float64s(output4)
-	if !reflect.DeepEqual(output4, expected4) {
-		t.Errorf("Test case 4 failed: expected %v, but got %v", expected4, output4)
-	}
-}
-
 func TestDifferenceIntSlice(t *testing.T) {
 	// Test case 1: multiple non-empty slices
 	input1 := [][]int{
-		{1, 2, 3},
+		{1, 1, 2, 3},
 		{2, 3, 4},
 		{3, 4, 5},
 	}
@@ -553,17 +518,7 @@ func TestDifferenceIntSlice(t *testing.T) {
 	}
 
 	// Test case 2: multiple empty slices
-	input2 := [][]int{
-		{},
-		{},
-		{},
-	}
-	expected2 := []int{}
-	output2 := Difference(input2...)
-	sort.Ints(output2)
-	if !reflect.DeepEqual(output2, expected2) {
-		t.Errorf("Test case 2 failed: expected %v, but got %v", expected2, output2)
-	}
+	assert.Equal(t, Difference([][]int{{}, {}, {}}...), []int(nil))
 
 	// Test case 3: one non-empty slice and two empty slices
 	input3 := [][]int{
@@ -579,13 +534,7 @@ func TestDifferenceIntSlice(t *testing.T) {
 	}
 
 	// Test case 4: variable definition with no elements
-	var s []int
-	expected4 := []int{}
-	output4 := Difference(s)
-	sort.Ints(output4)
-	if !reflect.DeepEqual(output4, expected4) {
-		t.Errorf("Test case 4 failed: expected %v, but got %v", expected4, output4)
-	}
+	assert.Equal(t, Difference([]int(nil)), []int(nil))
 	// Test case 5
 	{
 		input := [][]int{

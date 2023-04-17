@@ -143,32 +143,42 @@ func Union[T comparable](slices ...[]T) (unorderedResult []T) {
 	return
 }
 
-func Intersection[T comparable](slices ...[]T) []T {
-	switch len(slices) {
+func Intersection[T comparable](slices ...[]T) (result []T) {
+	argLength := len(slices)
+	switch argLength {
 	case 0:
-		return nil
+		// 在编译期就不会通过,会报错 cannot infer T
+		return
 	case 1:
 		return slices[0]
 	case 2:
-		l1 := slices[0]
-		l2 := slices[1]
-		guessLen := len(l1)
-		if len(l1) > len(l2) {
-			guessLen = len(l2)
-		}
-		alreadyAdded := map[T]bool{}
-		result := make([]T, 0, guessLen)
-		for _, item := range l1 {
-			if !alreadyAdded[item] && Contains(l2, item) {
-				result = append(result, item)
-				alreadyAdded[item] = true
-			}
-		}
-		return result
+		coreIntersection(slices[0], slices[1])
 	}
-	result := slices[0]
-	for _, s := range slices[1:] {
-		result = Intersection(result, s)
+	result = slices[0]
+	//
+	for _, b := range slices[1:] {
+		result = coreIntersection(result, b)
+	}
+	return
+}
+func coreIntersection[T comparable](a []T, b []T) []T {
+	var result []T
+	aSet := map[T]struct{}{}
+	bSet := map[T]struct{}{}
+	for _, v := range a {
+		aSet[v] = struct{}{}
+	}
+	for _, v := range b {
+		bSet[v] = struct{}{}
+	}
+	// 让aSet变成长度小的set
+	if len(aSet) > len(bSet) {
+		aSet, bSet = bSet, aSet
+	}
+	for t := range aSet {
+		if _, has := bSet[t]; has {
+			result = append(result, t)
+		}
 	}
 	return result
 }
@@ -186,28 +196,38 @@ func Intersection[T comparable](slices ...[]T) []T {
 // 示例：
 // Difference([]int{1, 2, 3}, []int{2, 3, 4}, []int{3, 4, 5}) // []int{1}
 func Difference[T comparable](slices ...[]T) (result []T) {
-	result = []T{}
-	// TOOD: 换性能更好的实现方式
-	var newSlice [][]T
-	for _, slice := range slices {
-		newSlice = append(newSlice, Unique(slice))
-	}
-	slices = newSlice
-	if len(slices) == 0 {
+	argLength := len(slices)
+	switch argLength {
+	case 0:
+		// 在编译期就不会通过,会报错 cannot infer T
 		return
+	case 1:
+		return slices[0]
+	case 2:
+		coreDifference(slices[0], slices[1])
 	}
-	hash := make(map[T]struct{})
-	for _, slice := range slices[1:] {
-		for _, elem := range slice {
-			hash[elem] = struct{}{}
-		}
-	}
-	for _, elem := range slices[0] {
-		if _, ok := hash[elem]; !ok {
-			result = append(result, elem)
-		}
+	result = slices[0]
+	for _, b := range slices[1:] {
+		result = coreDifference(result, b)
 	}
 	return
+}
+func coreDifference[T comparable](a []T, b []T) []T {
+	var result []T
+	aSet := map[T]struct{}{}
+	bSet := map[T]struct{}{}
+	for _, v := range a {
+		aSet[v] = struct{}{}
+	}
+	for _, v := range b {
+		bSet[v] = struct{}{}
+	}
+	for t := range aSet {
+		if _, has := bSet[t]; has == false {
+			result = append(result, t)
+		}
+	}
+	return result
 }
 
 // Unique 函数接收一个泛型类型的切片 slice，返回一个去重后的新切片 unique，
