@@ -761,7 +761,61 @@ func TestGroup(t *testing.T) {
 		t.Errorf("Group(%v, fn) = %v; want %v", input, output, expected)
 	}
 }
-
+func TestIndex(t *testing.T) {
+	{
+		// 构造一个元素类型为 string 的切片。
+		slice := []string{"apple", "banana", "cherry", "date", "elderberry"}
+		// 定义一个从元素中提取键的函数。
+		fn := func(v string) rune {
+			return rune(v[0])
+		}
+		// 调用 Index 函数将切片转换为映射。
+		index := Index(slice, fn)
+		// 检查映射是否包含预期的键值对。
+		assert.Equal(t, "apple", index['a'])
+		assert.Equal(t, "banana", index['b'])
+		assert.Equal(t, "cherry", index['c'])
+		assert.Equal(t, "date", index['d'])
+		assert.Equal(t, "elderberry", index['e'])
+	}
+	{
+		type Data struct {
+			ID   uint64
+			Name string
+		}
+		list := []Data{
+			{1, "nimo"},
+			{2, "nico"},
+			{3, "tim"},
+		}
+		index := Index(list, func(v Data) uint64 {
+			return v.ID
+		})
+		assert.Equal(t, "nimo", index[1].Name)
+		assert.Equal(t, "nico", index[2].Name)
+		assert.Equal(t, "tim", index[3].Name)
+		assert.Equal(t, 3, len(index))
+	}
+	{
+		type Data struct {
+			ID   uint64
+			Name string
+		}
+		list := []Data{
+			{1, "nimo"},
+			{2, "nico"},
+			{3, "tim"},
+			{2, "nico-2"},
+		}
+		index := Index(list, func(v Data) uint64 {
+			return v.ID
+		})
+		assert.Equal(t, "nimo", index[1].Name)
+		assert.Equal(t, "nico-2", index[2].Name)
+		assert.Equal(t, "tim", index[3].Name)
+		assert.Equal(t, 3, len(index))
+	}
+}
 func TestRandElem(t *testing.T) {
 	slice := []int{1, 2, 3, 4, 5}
 	for i := 0; i < 1000; i++ {

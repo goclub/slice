@@ -499,6 +499,18 @@ func Group[V any, K comparable](slice []V, fn func(v V) (k K)) map[K][]V {
 	return result
 }
 
+// Index 将一个元素类型为 V 的切片转换为一个键类型为 K，值类型为 V 的 map[K]V。
+// 函数 fn 用于从元素中提取键。键必须是可比较的。
+// 请自行确保 slice 是不重复的
+func Index[V any, K comparable](slice []V, fn func(v V) K) map[K]V {
+	index := make(map[K]V)
+	for _, v := range slice {
+		k := fn(v)
+		index[k] = v
+	}
+	return index
+}
+
 // RandElem 函数从给定的切片中随机选择一个元素，并返回一个布尔值表示是否找到有效元素。
 func RandElem[T any](slice []T) (elem T, has bool) {
 	if len(slice) == 0 {

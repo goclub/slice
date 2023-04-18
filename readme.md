@@ -74,6 +74,10 @@ func Sort[T any](slice []T, less func(a, b T) bool)
 // Group 函数接受一个任意类型 V 的切片和一个从 V 到可比较类型 K 的映射函数 fn，
 func Group[V any, K comparable](slice []V, fn func(v V) (k K)) map[K][]V
 
+
+// Index 将一个元素类型为 V 的切片转换为一个键类型为 K，值类型为 V 的 map[K]V。
+func Index[V any, K comparable](slice []V, fn func(v V) K) map[K]V 
+
 // RandElem 函数从给定的切片中随机选择一个元素，并返回一个布尔值表示是否找到有效元素。
 func RandElem[T any](slice []T) (elem T, has bool) 
 ```
